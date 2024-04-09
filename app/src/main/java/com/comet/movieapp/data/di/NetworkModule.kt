@@ -19,9 +19,6 @@ object NetworkModule {
     @Provides
     fun provideOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
-            .followRedirects(true)
-            .followSslRedirects(true)
-            //.addInterceptor(connectivityInterceptor) // Not implemented yet //take care
             .build()
     }
 
