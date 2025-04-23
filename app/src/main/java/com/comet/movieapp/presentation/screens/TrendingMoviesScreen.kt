@@ -11,14 +11,14 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.comet.movieapp.presentation.composables.ErrorItem
 import com.comet.movieapp.presentation.composables.MovieItem
 import com.comet.movieapp.presentation.composables.LoadingItem
-import com.comet.movieapp.presentation.viewmodels.PopularMoviesViewModel
+import com.comet.movieapp.presentation.viewmodels.TrendingMoviesViewModel
 
 @Composable
-fun PopularMoviesScreen(
+fun TrendingMoviesScreen(
     onClickNavigateToDetails: (Int) -> Unit,
 ) {
-    val popularMoviesViewModel = hiltViewModel<PopularMoviesViewModel>()
-    val lazyMovieItems = popularMoviesViewModel.movies.collectAsLazyPagingItems()
+    val viewModel = hiltViewModel<TrendingMoviesViewModel>()
+    val lazyMovieItems = viewModel.movies.collectAsLazyPagingItems()
 
     Box(Modifier) {
         Column {

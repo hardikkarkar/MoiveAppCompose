@@ -22,6 +22,13 @@ interface MoviesService {
         @Query("page") page: Int
     ): Response<PopularsMovieResponse>
 
+    @GET("trending/movie/day")
+    suspend fun getTrendingMovies(
+        @Query("api_key") api_key: String,
+        @Query("language") language: String,
+        @Query("page") page: Int
+    ): Response<PopularsMovieResponse>
+
     @GET("movie/{id}")
     suspend fun getMovieDetail(
         @Path("id") id: String,

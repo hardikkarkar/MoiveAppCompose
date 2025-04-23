@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 interface MovieRepository {
     suspend fun getPopularMovies(page: Int): Flow<Result<PopularsMovieResponse>>
     suspend fun getUpcomingMovies(page: Int): Flow<Result<PopularsMovieResponse>>
+    suspend fun getTrendingMovies(page: Int): Flow<Result<PopularsMovieResponse>>
     suspend fun getMovieDetail(movieId: String): Flow<Result<MoviesDetailResponse>>
 }
 
@@ -31,5 +32,9 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun getMovieDetail(movieId: String) = performNetworkFlow {
         moviesService.getMovieDetail(movieId, API_KEY, LANGUAGE).toResultOrThrow()
+    }
+
+    override suspend fun getTrendingMovies(page: Int) = performNetworkFlow {
+        moviesService.getTrendingMovies(API_KEY, LANGUAGE, page).toResultOrThrow()
     }
 }

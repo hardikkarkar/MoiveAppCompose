@@ -5,20 +5,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.listSaver
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.comet.movieapp.data.model.MovieDomain
 import com.comet.movieapp.presentation.composables.ErrorItem
-import com.comet.movieapp.presentation.composables.ListMovieItem
+import com.comet.movieapp.presentation.composables.MovieItem
 import com.comet.movieapp.presentation.composables.LoadingItem
 import com.comet.movieapp.presentation.viewmodels.UpcomingMoviesViewModel
 
@@ -36,7 +28,7 @@ fun UpcomingMoviesScreen(
                 items(lazyMovieItems.itemCount) { index ->
                     val movie = lazyMovieItems[index]
                     movie?.let {
-                        ListMovieItem(
+                        MovieItem(
                             movieDomain = it,
                             onClick = {
                                 onClickNavigateToDetails(it.id)

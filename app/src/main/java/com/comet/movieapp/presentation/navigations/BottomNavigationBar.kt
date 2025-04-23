@@ -20,6 +20,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
     val menuItems = listOf(
+        HomeScreen.TrendingScreen,
         HomeScreen.PopularHomeScreen,
         HomeScreen.UpcomingHomeScreen
     )

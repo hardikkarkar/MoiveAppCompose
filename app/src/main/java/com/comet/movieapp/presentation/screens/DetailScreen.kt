@@ -16,7 +16,7 @@ import com.comet.movieapp.presentation.viewmodels.DetailViewModel
 fun DetailScreen(
     movieId: String
 ) {
-    Box (Modifier.padding(bottom = 80.dp)){
+    Box {
         val detailViewModel = hiltViewModel<DetailViewModel>()
         val movieDetailDomainState = detailViewModel.getMovieDetailFlow().collectAsState()
         val uiState = detailViewModel.getErrorFlow().collectAsState()
