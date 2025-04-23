@@ -1,13 +1,9 @@
 package com.comet.movieapp.presentation.navigations
 
-import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,28 +16,9 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@Composable
-fun DashboardScreen() {
-    val navController: NavHostController = rememberNavController()
-
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        bottomBar = {
-            BottomBarCustom(navController = navController)
-        }
-    ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            homeNavGraph(navController = navController)
-        }
-    }
-}
-
 
 @Composable
-fun BottomBarCustom(navController: NavHostController){
+fun BottomNavigationBar(navController: NavHostController) {
     val menuItems = listOf(
         HomeScreen.PopularHomeScreen,
         HomeScreen.UpcomingHomeScreen
@@ -58,23 +35,29 @@ fun BottomBarCustom(navController: NavHostController){
         ) {
             menuItems.forEach { screen ->
                 //setup the alpha for the selected item
-                val isSelectedMenu = currentDestination?.hierarchy?.any { it.route == screen.route } == true
-                val backgroundAlpha = if (isSelectedMenu) 1f else 0.6f
+                val isSelectedMenu =
+                    currentDestination?.hierarchy?.any { it.route == screen.route } == true
+                val backgroundAlpha = if (isSelectedMenu) 1f else 0.7f
 
                 NavigationBarItem(
                     label = {
-                        Text(text = screen.title, color = Color.White.copy(alpha = backgroundAlpha)) },
-                    icon = { Icon(painterResource(id = screen.icon), contentDescription = screen.title, modifier = Modifier.graphicsLayer(alpha = backgroundAlpha)) },
+                        Text(text = screen.title, color = Color.White.copy(alpha = backgroundAlpha))
+                    },
+                    icon = {
+                        Icon(
+                            painterResource(id = screen.icon),
+                            contentDescription = screen.title,
+                            modifier = Modifier.graphicsLayer(alpha = backgroundAlpha)
+                        )
+                    },
                     selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                    //selectedContentColor = Color.White,
-                    //unselectedContentColor = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
                     onClick = {
                         navController.navigate(screen.route) {
+                            launchSingleTop = true
+                            restoreState = true
                             popUpTo(navController.graph.findStartDestination().id) {
                                 saveState = true
                             }
-                            launchSingleTop = true
-                            restoreState = true
                         }
                     })
             }

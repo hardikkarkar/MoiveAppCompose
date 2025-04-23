@@ -8,13 +8,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.comet.movieapp.presentation.composables.DetailContent
+import com.comet.movieapp.presentation.composables.UpdateUiStateMessage
 import com.comet.movieapp.presentation.viewmodels.DetailViewModel
 
 @Composable
 fun DetailScreen(
-    navHostController: NavHostController,
     movieId: String
 ) {
     Box (Modifier.padding(bottom = 80.dp)){
@@ -25,5 +24,6 @@ fun DetailScreen(
             detailViewModel.getMovieDetails(movieId)
         }
         DetailContent(movieDetailDomainState.value)
+        UpdateUiStateMessage(state = uiState)
     }
 }

@@ -3,7 +3,8 @@ package com.comet.movieapp.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.comet.movieapp.presentation.navigations.RootNavigationGraph
+import androidx.navigation.compose.rememberNavController
+import com.comet.movieapp.presentation.navigations.MainScreen
 import com.comet.movieapp.ui.MovieAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -14,7 +15,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MovieAppTheme {
-                RootNavigationGraph()
+                val navController = rememberNavController()
+                MainScreen(navController)
             }
         }
     }

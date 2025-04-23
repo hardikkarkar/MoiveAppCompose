@@ -2,37 +2,70 @@ package com.comet.movieapp.presentation.screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.comet.movieapp.presentation.composables.ErrorItem
 import com.comet.movieapp.presentation.composables.ListMovieItem
+import com.comet.movieapp.presentation.composables.LoadingItem
 import com.comet.movieapp.presentation.viewmodels.PopularMoviesViewModel
-import com.comet.movieapp.presentation.composables.UpdateUiStateMessage
 
 @Composable
 fun PopularMoviesScreen(
     onClickNavigateToDetails: (Int) -> Unit,
 ) {
-    Box(Modifier.padding(bottom = 80.dp)) {
-        val popularMoviesViewModel = hiltViewModel<PopularMoviesViewModel>()
-        val popularMovies = popularMoviesViewModel.getPopularMoviesFlow().collectAsState()
-        val uiState = popularMoviesViewModel.getErrorFlow().collectAsState()
-        LaunchedEffect(Unit) {
-            popularMoviesViewModel.fetchPopularMovies()
-        }
+    val popularMoviesViewModel = hiltViewModel<PopularMoviesViewModel>()
+    val lazyMovieItems = popularMoviesViewModel.movies.collectAsLazyPagingItems()
+
+    Box(Modifier) {
         Column {
-            UpdateUiStateMessage(state = uiState)
             LazyColumn {
-                items(popularMovies.value) {
-                    ListMovieItem(movieDomain = it, onClick = { onClickNavigateToDetails(it.id) })
+                items(lazyMovieItems.itemCount) { index ->
+                    val movie = lazyMovieItems[index]
+                    movie?.let {
+                        ListMovieItem(
+                            movieDomain = it,
+                            onClick = { onClickNavigateToDetails(it.id) })
+                    }
+                }
+                lazyMovieItems.apply {
+                    when {
+                        loadState.refresh is LoadState.Loading -> {
+                            item { LoadingItem() }
+                        }
+
+                        loadState.append is LoadState.Loading -> {
+                            item { LoadingItem() }
+                        }
+
+                        loadState.refresh is LoadState.Error -> {
+                            val e = lazyMovieItems.loadState.refresh as LoadState.Error
+                            item {
+                                ErrorItem(
+                                    message = e.error.localizedMessage!!,
+                                    modifier = Modifier.fillParentMaxSize(),
+                                    onClickRetry = { retry() }
+                                )
+                            }
+                        }
+
+                        loadState.append is LoadState.Error -> {
+                            val e = lazyMovieItems.loadState.append as LoadState.Error
+                            item {
+                                ErrorItem(
+                                    message = e.error.localizedMessage!!,
+                                    onClickRetry = { retry() }
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 }
+
+

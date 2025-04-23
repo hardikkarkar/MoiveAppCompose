@@ -12,8 +12,8 @@ import com.comet.movieapp.utils.toResultOrThrow
 import kotlinx.coroutines.flow.Flow
 
 interface MovieRepository {
-    suspend fun getPopularMovies(page: Int = 1): Flow<Result<PopularsMovieResponse>>
-    suspend fun getUpcomingMovies(page: Int = 1): Flow<Result<PopularsMovieResponse>>
+    suspend fun getPopularMovies(page: Int): Flow<Result<PopularsMovieResponse>>
+    suspend fun getUpcomingMovies(page: Int): Flow<Result<PopularsMovieResponse>>
     suspend fun getMovieDetail(movieId: String): Flow<Result<MoviesDetailResponse>>
 }
 

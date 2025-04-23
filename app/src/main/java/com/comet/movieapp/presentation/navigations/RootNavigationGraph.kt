@@ -6,15 +6,13 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.comet.movieapp.R
-import com.comet.movieapp.presentation.screens.PopularMoviesScreen
 import com.comet.movieapp.presentation.screens.DetailScreen
+import com.comet.movieapp.presentation.screens.PopularMoviesScreen
 import com.comet.movieapp.presentation.screens.UpcomingMoviesScreen
 
 object Graph {
-    const val ROOT = "root_graph"
     const val HOME = "home_graph"
     const val DETAILS = "details_graph"
 }
@@ -26,20 +24,6 @@ sealed class DetailsScreen(val route: String) {
 sealed class HomeScreen(val route: String, val icon: Int, val title: String) {
     object PopularHomeScreen : HomeScreen("popular_screen", R.drawable.ic_movie, "Popular")
     object UpcomingHomeScreen : HomeScreen("upcoming_screen", R.drawable.ic_love, "Upcoming")
-}
-
-
-@Composable
-fun RootNavigationGraph(navController: NavHostController = rememberNavController()) {
-    NavHost(
-        navController = navController,
-        route = Graph.ROOT,
-        startDestination = Graph.HOME
-    ) {
-        composable(route = Graph.HOME) {
-            DashboardScreen()
-        }
-    }
 }
 
 @Composable
@@ -68,11 +52,10 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
         route = Graph.DETAILS + "/{movieId}",
         startDestination = DetailsScreen.Information.route
     ) {
-
         composable(DetailsScreen.Information.route) {
             val movieId = it.arguments?.getString("movieId") ?: ""
             Log.d("detailsNavGraph", "movieId retrieved: ${movieId}")
-            DetailScreen(navHostController = navController, movieId)
+            DetailScreen(movieId)
         }
     }
 }
