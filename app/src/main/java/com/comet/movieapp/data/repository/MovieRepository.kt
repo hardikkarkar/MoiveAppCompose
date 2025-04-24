@@ -16,6 +16,7 @@ interface MovieRepository {
     suspend fun getUpcomingMovies(page: Int): Flow<Result<PopularsMovieResponse>>
     suspend fun getTrendingMovies(page: Int): Flow<Result<PopularsMovieResponse>>
     suspend fun getMovieDetail(movieId: String): Flow<Result<MoviesDetailResponse>>
+    suspend fun searchMovies(query: String): Flow<Result<PopularsMovieResponse>>
 }
 
 class MovieRepositoryImpl @Inject constructor(
@@ -36,5 +37,9 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun getTrendingMovies(page: Int) = performNetworkFlow {
         moviesService.getTrendingMovies(API_KEY, LANGUAGE, page).toResultOrThrow()
+    }
+
+    override suspend fun searchMovies(query: String) =  performNetworkFlow {
+        moviesService.searchMovies(API_KEY, query).toResultOrThrow()
     }
 }

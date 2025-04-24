@@ -1,5 +1,6 @@
 package com.comet.movieapp.presentation.navigations
 
+import SearchScreen
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
@@ -15,11 +16,12 @@ import com.comet.movieapp.presentation.screens.UpcomingMoviesScreen
 
 object Graph {
     const val HOME = "home_graph"
-    const val DETAILS = "details_graph"
+    const val NEXT = "next_graph"
 }
 
-sealed class DetailsScreen(val route: String) {
-    object Information : DetailsScreen("information_screen")
+sealed class Screen(val route: String) {
+    object DetailScreen : Screen("detail_screen")
+    object SearchScreen : Screen("search_screen")
 }
 
 sealed class HomeScreen(val route: String, val icon: Int, val title: String) {
@@ -37,17 +39,17 @@ fun homeNavGraph(navController: NavHostController) {
     ) {
         composable(HomeScreen.TrendingScreen.route) {
             TrendingMoviesScreen(onClickNavigateToDetails = { movieID ->
-                navController.navigate(route = Graph.DETAILS + "/$movieID")
+                navController.navigate(route = Graph.NEXT + "/$movieID")
             })
         }
         composable(HomeScreen.PopularHomeScreen.route) {
             PopularMoviesScreen(onClickNavigateToDetails = { movieID ->
-                navController.navigate(route = Graph.DETAILS + "/$movieID")
+                navController.navigate(route = Graph.NEXT + "/$movieID")
             })
         }
         composable(HomeScreen.UpcomingHomeScreen.route) {
             UpcomingMoviesScreen(onClickNavigateToDetails = { movieID ->
-                navController.navigate(route = Graph.DETAILS + "/$movieID")
+                navController.navigate(route = Graph.NEXT + "/$movieID")
             })
         }
         detailsNavGraph(navController = navController)
@@ -56,13 +58,18 @@ fun homeNavGraph(navController: NavHostController) {
 
 fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
     navigation(
-        route = Graph.DETAILS + "/{movieId}",
-        startDestination = DetailsScreen.Information.route
+        route = Graph.NEXT + "/{movieId}",
+        startDestination = Screen.DetailScreen.route
     ) {
-        composable(DetailsScreen.Information.route) {
+        composable(Screen.DetailScreen.route) {
             val movieId = it.arguments?.getString("movieId") ?: ""
-            Log.d("detailsNavGraph", "movieId retrieved: ${movieId}")
             DetailScreen(movieId)
+        }
+        composable(Screen.SearchScreen.route) {
+            SearchScreen(onClickNavigateToDetails = { movieID ->
+                navController.popBackStack()
+                navController.navigate(route = Graph.NEXT + "/$movieID")
+            })
         }
     }
 }
