@@ -20,9 +20,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.comet.movieapp.presentation.composables.MovieItem
+import com.comet.movieapp.presentation.composables.SearchItem
 import com.comet.movieapp.presentation.viewmodels.SearchViewModel
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -42,7 +43,7 @@ fun SearchScreen(
     var active by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = Unit) {
-        searchViewModel.searchQuery.debounce(500).filter { it.isNotBlank() }
+        searchViewModel.searchQuery.debounce(300).filter { it.isNotBlank() }
             .distinctUntilChanged().flatMapLatest {
                 searchViewModel.searchMovies(it)
             }.launchIn(this)
@@ -53,7 +54,7 @@ fun SearchScreen(
             SearchBar(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
                 query = query,
                 onQueryChange = {
                     query = it
@@ -63,33 +64,38 @@ fun SearchScreen(
                     active = false
                     searchViewModel.searchMovies(it)
                 },
-                active = active,
+                active = false,
                 onActiveChange = {
-                    active = it
+                    active = false
                 },
                 placeholder = { Text("Search Movies") },
                 leadingIcon = {
                     Icon(Icons.Filled.Search, contentDescription = "Search")
                 },
                 colors = SearchBarDefaults.colors(),
-                content = {
-                    when (uiState) {
-                        is String -> {
-                            Text(text = uiState.toString())
-                        }
+                content = {}
+            )
+            Box {
+                when (uiState) {
+                    is String -> {
+                        Text(
+                            text = uiState.toString(),
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                    }
 
-                        null -> {
-                            LazyColumn(modifier = Modifier.padding(16.dp)) {
-                                items(movieFlow) { movie ->
-                                    MovieItem(
-                                        movieDomain = movie,
-                                        onClick = { onClickNavigateToDetails(movie.id) })
-                                }
+                    null -> {
+                        LazyColumn(modifier = Modifier.padding(16.dp)) {
+                            items(movieFlow) { movie ->
+                                SearchItem(
+                                    movieDomain = movie,
+                                    onClick = { onClickNavigateToDetails(movie.id) })
                             }
                         }
                     }
                 }
-            )
+            }
         }
     }
 }
